@@ -9,12 +9,19 @@ export const LOGIN_FAILED = 'LOGIN_FAILED'
 export const GETTING_HABITS = 'GETTING_HABITS'
 export const GET_HABITS_SUCCESS = 'GET_HABITS_SUCCESS'
 export const GET_HABITS_FAILED = 'GET_HABITS_FAILED'
+export const GETTING_CATEGORIES = 'GETTING_CATEGORIES'
+export const GET_CATEGORIES_SUCCESS = 'GET_CATEGORIES_SUCCESS'
+export const GET_CATEGORIES_FAILED = 'GET_CATEGORIES_FAILED'
 export const CREATING_HABIT = 'CREATING_HABIT'
 export const CREATED_HABIT_SUCCESS = 'CREATED_HABIT_SUCCESS'
 export const CREATED_HABIT_FAILED = 'CREATED_HABIT_FAILED'
+export const DELETING_HABIT ='DELETING_HABIT'
+export const DELETED_HABIT_SUCCESS = 'DELETED_HABIT_SUCCESS'
+export const DELETED_HABIT_FAILED = 'DELETED_HABIT_FAILED'
 export const COMPLETING_HABIT = 'COMPLETING_HABIT'
 export const COMPLETING_HABIT_SUCCESS = 'COMPLETING_HABIT_SUCCESS'
 export const COMPLETING_HABIT_FAILED = 'COMPLETING_HABIT_FAILED'
+export const CHART_DATA = 'CHART_DATA'
 
 
 
@@ -72,7 +79,7 @@ export function getHabits() {
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
   
-        axios
+        return axios
             .get(`https://lifegpa-zach-christy.herokuapp.com/api/users/habits/${id}`, {
                 headers: {
                     Authorization: token
@@ -94,21 +101,52 @@ export function getHabits() {
     }
 }
 
-export function createHabit(habitTitle, categoryId, completed, completionPoints) {
+export function getCategories() {
     return(dispatch) => {
-        dispatch({type: CREATING_HABIT})
+        dispatch({type: GETTING_CATEGORIES})
 
         const token = localStorage.getItem('token')
   
         axios
-            .post("`https://lifegpa-zach-christy.herokuapp.com/api/habits/", {
+            .get(`https://lifegpa-zach-christy.herokuapp.com/api/categories`, {
                 headers: {
                     Authorization: token
                 }
-            },
-            {
-                habitTitle, categoryId, completed, completionPoints
             })
+            .then(res => {
+                console.log(res.data)
+                dispatch({
+                    type: GET_CATEGORIES_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: GET_CATEGORIES_FAILED,
+                    payload: err
+                })
+            })
+    }
+}
+
+export function createHabit(habitTitle, categoryId) {
+    return(dispatch) => {
+        dispatch({type: CREATING_HABIT})
+
+        const token = localStorage.getItem('token')
+        const userId = localStorage.getItem('id')
+  
+        return axios
+            .post("https://lifegpa-zach-christy.herokuapp.com/api/habits/",
+            {
+                habitTitle, categoryId, userId
+            }, 
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+            )
             .then(res => {
                 dispatch({
                     type: CREATED_HABIT_SUCCESS,
@@ -124,13 +162,42 @@ export function createHabit(habitTitle, categoryId, completed, completionPoints)
     }
 }
 
+export function deleteHabit(id) {
+    return(dispatch) => {
+        dispatch({type: DELETING_HABIT})
+
+        const token = localStorage.getItem('token')
+  
+        return axios
+            .delete(`https://lifegpa-zach-christy.herokuapp.com/api/habits/${id}`,
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+            )
+            .then(res => {
+                dispatch({
+                    type: DELETED_HABIT_SUCCESS,
+                    payload: id
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DELETED_HABIT_FAILED,
+                    payload: err
+                })
+            })
+    }
+}
+
 export function completedHabit(id, habitTitle, userId, categoryId, completed, completionPoints) {
     return(dispatch) => {
         dispatch({type: COMPLETING_HABIT})
 
         const token = localStorage.getItem('token')
   
-        axios
+        return axios
             .put(`https://lifegpa-zach-christy.herokuapp.com/api/habits/${id}`, 
             {
                 habitTitle, categoryId, userId, completed, completionPoints
@@ -153,5 +220,11 @@ export function completedHabit(id, habitTitle, userId, categoryId, completed, co
                     payload: err
                 })
             })
+    }
+}
+
+export function getChartData() {
+    return {
+        type: CHART_DATA,
     }
 }

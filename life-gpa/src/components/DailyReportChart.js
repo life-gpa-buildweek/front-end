@@ -18,14 +18,44 @@ class DailyReportChart extends React.Component {
     constructor() {
         super();
         this.state = {
-          hide: true,
         };
     }
 
+    getData = () => {}
+
+    grade = () => {} 
+    
+
     render() {
+
+        const donutData = {
+            labels: [
+                'Completed',
+                'Not Completed'
+            ],
+            datasets: [{
+                data: [
+                    this.props.completed,
+                    this.props.notCompleted
+                ],
+                backgroundColor: [
+                    '#ffd764',
+                    '#eb6e3d'
+                ]
+            }]
+        };
+        
+        const donutOptions = {
+          responsive: false,
+          cutoutPercentage: 75,
+          legend: {
+              display: false
+          }
+        };
 
         return (
             <ChartContainer>
+                <Doughnut height={250} width={500} data={donutData} options={donutOptions}/>
             </ChartContainer>
         );
   }
@@ -35,8 +65,9 @@ class DailyReportChart extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
-    gettingHabits: state.gettingHabits
+    habits: state.habits,
+    completed: state.completed,
+    notCompleted: state.notCompleted
   }
 }
 

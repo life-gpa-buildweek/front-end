@@ -1,6 +1,3 @@
-/*
-  Be sure to import in all of the action types from `../actions`
-*/
 import {
     REGISTERING_USER,
     REGISTER_USER_SUCCESS,
@@ -16,40 +13,34 @@ import {
     CREATED_HABIT_FAILED,
     COMPLETING_HABIT,
     COMPLETING_HABIT_SUCCESS,
-    COMPLETING_HABIT_FAILED
+    COMPLETING_HABIT_FAILED,
+    GETTING_CATEGORIES,
+    GET_CATEGORIES_SUCCESS,
+    GET_CATEGORIES_FAILED,
+    DELETING_HABIT,
+    DELETED_HABIT_SUCCESS,
+    DELETED_HABIT_FAILED,
+    CHART_DATA
   } from "../actions";
   
-  /*
-   Your initial/default state for this project could *Although does not have to* look a lot like this
-   {
-     smurfs: [],
-     fetchingSmurfs: false
-     addingSmurf: false
-     updatingSmurf: false
-     deletingSmurf: false
-     error: null
-   }
-  */
   const initialState = {
     user: [],
     newUser: [],
     habits: [],
+    categories: [],
+    completed: '',
+    notCompleted: '',
     registeringUser: false,
     registeredSuccessful: false,
     loggingIn: false,
     gettingHabits: false,
     creatingHabit: false,
+    deletingHabit: false,
     completingHabit: false,
+    gettingCategories: false,
     error: null
   };
-  
-  /*
-    You'll only need one smurf reducer for this project.
-    Feel free to export it as a default and import as rootReducer. 
-    This will guard your namespacing issues.
-    There is no need for 'combineReducers' in this project.
-    Components can then read your store as, `state` and not `state.fooReducer`.
-  */
+
   export default (state = initialState, action) => {
     switch (action.type) {
   
@@ -151,6 +142,33 @@ import {
             }
         }
 
+        case DELETING_HABIT: {
+          return {
+            ...state,
+            deletingHabit: true
+          }
+        }
+
+        case DELETED_HABIT_SUCCESS: {
+          const deletedHabit = state.habits.filter(habit =>
+            habit.id !== action.payload
+          )
+          return {
+            ...state,
+            deletingHabit: false,
+            habits: deletedHabit,
+            error: null
+          }
+        }
+
+        case DELETED_HABIT_FAILED: {
+            return {
+              ...state,
+              deletingHabit: false,
+              error: action.payload
+            }
+        }
+
         case COMPLETING_HABIT: {
           return {
             ...state,
@@ -167,6 +185,7 @@ import {
             } 
             : habit
           )
+
           return {
             ...state,
             completingHabit: false,
@@ -181,6 +200,50 @@ import {
               completingHabit: false,
               error: action.payload
             }
+        }
+
+        case CHART_DATA: {
+          const getComplete = state.habits.filter((habit) => habit.completed ? + 1 : 0)
+
+          const getNotComplete = state.habits.filter((habit) => !habit.completed ? + 1 : 0)
+
+          const completed = Math.round(getComplete.length / state.habits.length * 100)
+
+          const notCompleted = Math.round(getNotComplete.length / state.habits.length * 100)
+
+          console.log(notCompleted)
+          console.log(completed)
+
+          return {
+            ...state,
+            completed: completed,
+            notCompleted: notCompleted,
+          }
+        }
+
+        case GETTING_CATEGORIES: {
+          return {
+            ...state,
+            gettingCategories: true,
+            error: null,
+          }
+        }
+
+        case GET_CATEGORIES_SUCCESS: {
+            return {
+              ...state,
+              gettingCategories: false,
+              categories: action.payload,
+              error: null,
+            }
+        }
+
+        case GET_CATEGORIES_FAILED: {
+          return {
+            ...state,
+            gettingCategories: false,
+            error: action.payload
+          }
         }
   
         default:

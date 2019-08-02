@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
-import {completedHabit} from '../actions'
+import {completedHabit, getChartData, deleteHabit} from '../actions'
 
 
 
@@ -62,14 +62,14 @@ const P = styled.p`
 `
 
 const ButtonContainer = styled.div`
-    width: 70px;
+    width: 100px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 `
 
-const Button = styled.button`
+const YButton = styled.button`
     border-radius: 15px;
     border: 1px solid #8e8e8e;
     background: transparent;
@@ -102,6 +102,52 @@ const Button = styled.button`
     }
 `
 
+const NButton = styled.button`
+    border-radius: 15px;
+    border: 1px solid #8e8e8e;
+    background: transparent;
+    color: #8e8e8e;
+    width: 30px;
+    height: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: .9em;
+    font-weight: 600;
+    cursor: pointer;
+
+    ${props => props.type.completed ?  
+        `
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+        `
+      :
+        null
+    }
+
+    ${props => props.type.completed === false && props.type.default === false ?  
+        `
+            border: 1px solid white;
+            background: white;
+            color: black;
+        `
+      :
+        null
+    }
+`
+
+const DButton = styled.button`
+    border-radius: 15px;
+    border: 1px solid #d64541;
+    background: #d64541;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: .9em;
+    font-weight: 600;
+    cursor: pointer;
+`
+
 
 
 
@@ -112,6 +158,12 @@ class Habits extends React.Component {
           completed: false,
           default: true
         };
+    }
+
+    componentWillMount() {
+        if (this.props.completed) {
+            this.setState({completed: true})
+        }
     }
 
     completedHandler = event => {
@@ -126,6 +178,9 @@ class Habits extends React.Component {
         const categoryId = this.props.categoryId
 
         this.props.completedHabit(id, habitTitle, categoryId, userId, completed, completionPoints)
+            .then(() => {
+                this.props.getChartData()
+            })
     }
 
     uncompletedHandler = event => {
@@ -139,6 +194,16 @@ class Habits extends React.Component {
         const categoryId = this.props.categoryId
 
         this.props.completedHabit(id, habitTitle, categoryId, userId, completed, completionPoints)
+            .then(() => {
+                this.props.getChartData()
+            })
+    }
+
+    deleteHandler = event => {
+        event.preventDefault()
+
+        const id = this.props.id
+        this.props.deleteHabit(id)
     }
 
     render() {
@@ -147,8 +212,9 @@ class Habits extends React.Component {
             <HabitContainer type={this.state}>
                 <P type={this.state}>{this.props.title}</P>
                 <ButtonContainer>
-                    <Button type={this.state} onClick={this.completedHandler}>Y</Button>
-                    <Button type={this.state} onClick={this.uncompletedHandler}>N</Button>
+                    <YButton type={this.state} onClick={this.completedHandler}>Y</YButton>
+                    <NButton type={this.state} onClick={this.uncompletedHandler}>N</NButton>
+                    <DButton type={this.state} onClick={this.deleteHandler}>X</DButton>
                 </ButtonContainer>
             </HabitContainer>
         );
@@ -164,7 +230,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    completedHabit
+    completedHabit,
+    getChartData,
+    deleteHabit
 }
 
 export default connect(

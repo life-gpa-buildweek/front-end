@@ -2,9 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import SimpleBar from 'simplebar-react'
+import {createHabit} from '../actions'
 
 import 'simplebar/dist/simplebar.min.css';
 import Habits from './Habits'
+import Categories from './Categories'
 import DailyReportChart from './DailyReportChart'
 
 
@@ -22,7 +24,23 @@ const dailyReportContainer = {
 
 const ChartContainer = styled.div`
     width: 100%;
-    margin-bottom: 70px;
+    margin-bottom: 50px;
+`
+
+const HeaderContainer = styled.div`
+    display: flex;
+    justify-content: start;
+`
+
+const GraphContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`
+
+const P = styled.p`
+    margin-bottom: 30px;
 `
 
 const HabitsContainer = styled.div`
@@ -31,10 +49,128 @@ const HabitsContainer = styled.div`
 
 const TitleContainer = styled.div`
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+`
+
+const H3Container = styled.div`
+    width: 100%;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+`
+
+const Form = styled.form`
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    flex-direction: column;
+
+    ${props => props.type === 'false' ?  
+        `
+            display: none;
+            opacity: 0;
+        `
+      :
+        null
+    }
+
+    ${props => props.type === 'true' ?  
+        `
+            display: flex;
+        `
+      :
+        null
+    }
+`
+
+const FormInputContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content space-evenly;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+`
+
+const InputInner = styled.div`
+    height: 45px;
+    padding: 0;
+    position: relative;
+    margin: 0;
+    width: 300px;
+    text-align: left;
+`
+
+const Input = styled.input`
+    background: #fafafa;
+    width: 100%;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    margin: 0;
+    outline: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-appearance: none;
+    font-size: 17px;
+    padding: 16px 0 9px 8px!important;
+`
+
+const LoginButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    justify-content: flex-start;
+    flex:0 0 auto;
+    margin:8px 40px;
+`
+
+const LoginButton = styled.button`
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1.3px;
+    line-height: 18px;
+    outline: 0!important;
+    background: 0 0;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    font-weight: 600;
+    margin: 35px 0 15px 0;
+    padding: 10px;
+    text-align: center;
+    text-transform: inherit;
+    text-overflow: ellipsis;
+    user-select: none;
+    white-space: nowrap;
+    width: 60%;
+    background-color: #ffd764;
+    border: 1px solid #ffd764;
+    border-radius: 6px;
+    color: #000;
+    position: relative;
+`
+
+const Select = styled.select`
+    height: 100%;
+    width: 100%;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 17px;
+    padding: 10px 0 9px 8px!important;
 `
 
 const H3 = styled.h3`
@@ -67,7 +203,39 @@ class DailyReport extends React.Component {
         super();
         this.state = {
           hide: true,
+          addHabit: false,
+          habitTitle: '',
+          categoryId: '1',
+          category: '',
         };
+    }
+
+    inputHandler = event => {
+        event.preventDefault();
+
+        this.setState({ 
+            ...this.state, 
+            [event.target.name]: event.target.value
+        })
+    }
+
+    showHandler = event => {
+        event.preventDefault()
+
+        if (this.state.addHabit) {
+        this.setState({addHabit: false})
+        } if (this.state.addHabit === false) {
+            this.setState({addHabit: true})
+        }
+    }
+
+    formSubmit = event => {
+        event.preventDefault()
+
+        const habitTitle = this.state.habitTitle
+        const id = this.state.categoryId
+        const categoryId = parseInt(id)
+        this.props.createHabit(habitTitle, categoryId)
     }
 
     render() {
@@ -75,16 +243,58 @@ class DailyReport extends React.Component {
         return (
             <SimpleBar style={dailyReportContainer}>
                 <ChartContainer>
-                    <h1>Your Daily Report</h1>
-                    <div>
-                        <p>Today's Grade</p>
-                        {/* <DailyReportChart /> */}
-                    </div>
+                    <HeaderContainer>
+                        <h1>Your Daily Report</h1>
+                    </HeaderContainer>
+                    <GraphContainer>
+                        <P>Today's Grade</P>
+                        <DailyReportChart />
+                    </GraphContainer>
                 </ChartContainer>
                 <HabitsContainer>
                     <TitleContainer>
-                        <H3>Did you...</H3>
-                        <Button>Add More Habits</Button>
+                        <H3Container>
+                            <H3>Did you...</H3>
+                            <Button onClick={this.showHandler}>Add More Habits</Button>
+                        </H3Container>
+                        <Form type={this.state.addHabit.toString()} onSubmit={this.formSubmit}>
+                            <p>Add your new habit below </p>
+                            <FormInputContainer>
+                                    <InputInner>
+                                        <Input
+                                            aria-required="true" 
+                                            autoCapitalize="off" 
+                                            autoCorrect="off" 
+                                            maxLength="75" 
+                                            name="habitTitle" 
+                                            type="text"
+                                            placeholder="Enter Habit Title"
+                                            value={this.state.habitTitle}
+                                            onChange={this.inputHandler}
+                                        />
+                                    </InputInner>
+
+                                    <InputInner>
+                                        <Select value={this.state.categoryId} onChange={(e) => this.setState({categoryId: e.target.value})}>
+                                            {this.props.categories.map(category => 
+                                                <Categories
+                                                    id={category.id}
+                                                    categoryTitle={category.categoryTitle}
+                                                    color={category.color}
+                                                    userId={category.userId}
+                                                    key={category.id}
+                                                />
+                                            )}
+                                        </Select>
+                                    </InputInner>
+                            </FormInputContainer>
+
+                            <LoginButtonContainer>
+                                <LoginButton type="submit">
+                                    Add Habit
+                                </LoginButton>      
+                            </LoginButtonContainer>
+                        </Form>
                     </TitleContainer>
                     <HabitsList>
                         {this.props.habits.length === 0
@@ -112,11 +322,13 @@ class DailyReport extends React.Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    habits: state.habits
+    habits: state.habits,
+    categories: state.categories
   }
 }
 
 const mapDispatchToProps = {
+    createHabit
 }
 
 export default connect(

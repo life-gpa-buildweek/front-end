@@ -7,7 +7,7 @@ import Header from './Header'
 import Menu from './Menu'
 import DailyReport from './DailyReport'
 import RecentReports from './RecentReports'
-import { getHabits } from '../actions'
+import { getHabits, getCategories } from '../actions'
 
 
 
@@ -34,7 +34,10 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getHabits();
+        this.props.getHabits()
+        .then(() => {
+            this.props.getCategories()
+        }) 
     }
 
     logOut = event => {
@@ -78,7 +81,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  getHabits: getHabits
+  getHabits,
+  getCategories
 }
 
 export default withRouter(
