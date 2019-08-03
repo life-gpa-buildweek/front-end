@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 
 import dashboardIcon from './main-icon.svg'
 import categoriesIcon from './categories-icon.svg'
@@ -47,6 +47,19 @@ const ButtonDiv = styled.div`
     align-content: center;
     margin:40px 0;
     cursor: pointer;
+
+    ${props => props.Selected && css`
+        justify-content: space-evenly;
+        border-left: 5px solid #ffd764;
+    `}
+`
+
+const P = styled.p`
+    font-family: 'Open Sans',sans-serif;
+    font-size: .8em;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: .5px;
 `
 
 
@@ -69,8 +82,9 @@ class Menu extends React.Component {
                 </ProfilePic>
 
                 <ButtonContainer>
-                    <ButtonDiv>
-                        <img src={dashboardIcon} style={{width: 30 + "px"}} alt="dashboard icon" />
+                    <ButtonDiv Selected>
+                        <img src={dashboardIcon} style={{width: 23 + "px"}} alt="dashboard icon" />
+                        <P>Dashboard</P>
                     </ButtonDiv>
 
                     <ButtonDiv>

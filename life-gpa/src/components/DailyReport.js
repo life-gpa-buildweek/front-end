@@ -131,8 +131,6 @@ const LoginButtonContainer = styled.div`
     justify-content: center;
     align-content: center;
     align-items: center;
-    justify-content: flex-start;
-    flex:0 0 auto;
     margin:8px 40px;
 `
 
@@ -155,7 +153,7 @@ const LoginButton = styled.button`
     text-overflow: ellipsis;
     user-select: none;
     white-space: nowrap;
-    width: 60%;
+    width: 40%;
     background-color: #ffd764;
     border: 1px solid #ffd764;
     border-radius: 6px;
@@ -194,6 +192,14 @@ const Button = styled.button`
 
 const HabitsList = styled.ul`
     padding: 0;
+`
+
+const HabitListP = styled.p`
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.3em;
+    font-weight: 400;
+    text-align: center;
+    color: #b9b9b9;
 `
 
 
@@ -236,6 +242,9 @@ class DailyReport extends React.Component {
         const id = this.state.categoryId
         const categoryId = parseInt(id)
         this.props.createHabit(habitTitle, categoryId)
+            .then(() => {
+                this.setState({habitTitle: ''})
+            })
     }
 
     render() {
@@ -298,7 +307,7 @@ class DailyReport extends React.Component {
                     </TitleContainer>
                     <HabitsList>
                         {this.props.habits.length === 0
-                            ? <h4>You have no Habits, click the Add More Habits button to get started.</h4>
+                            ? <HabitListP>Looks like you have no Habits, click the 'Add More Habits' button to get started.</HabitListP>
                             : this.props.habits.map(habit => 
                                 <Habits
                                     key={habit.id}
