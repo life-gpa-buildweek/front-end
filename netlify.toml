@@ -8,7 +8,7 @@
 [build]
   base    = "./life-gpa"
   publish = "./life-gpa/build"
-  command = "NPM build" 
+  command = "npm run-script build" 
 
 [[redirects]]
   from = "/*"
