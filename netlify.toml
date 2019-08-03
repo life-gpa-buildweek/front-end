@@ -6,8 +6,8 @@
 #    that is where we will look for package.json/.nvmrc/etc not repo root!
 
 [build]
-  base    = "./<life-gpa>"
-  publish = "./<life-gpa>/build"
+  base    = "./life-gpa"
+  publish = "./life-gpa/build"
   command = "NPM build" 
 
 [[redirects]]
