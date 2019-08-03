@@ -1,56 +1,48 @@
 import React from 'react'
-import {Route, Link} from 'react-router-dom'
-import styled from 'styled-components'
+import {Route, Switch} from 'react-router-dom'
+import styled, {createGlobalStyle} from 'styled-components'
 
-import './App.css'
+import LaunchScreen from './LaunchScreen'
 import SignUp from './SignUp'
 import Login from './Login'
+import Main from './Main';
+import PrivateRoute from './PrivateRoute'
 
 
+const GlobalStyle = createGlobalStyle`
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap')
 
-const LaunchScreen = styled.div`
-    display: flex;
-    width: 100vh;
-    background: #000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    html, body {
+        font-family: 'Open Sans', sans-serif !important;
+    }
+
+    #root {
+        min-height: 100vh;
+    }
 `
 
-const InsideContainer = styled.div`
+const Container = styled.div`
+    height: 100vh;
     display: flex;
-    width: 700px;
-    background: #000;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: #efefef;
 `
 
 class App extends React.Component {
     render() {
         return (
-            <LaunchScreen>
-                <InsideContainer>
-                    <div>
-                        <img src="" alt="logo" />
-                    </div>
-
-                    <div>
-                        <Link to="/sign-up">
-                            <button>Create Account</button>
-                        </Link>
-
-                        <Link to="/login">
-                            <button>Login</button>
-                        </Link>
-                    </div>
-                </InsideContainer>
-                
-                <Route exact path="/sign-up" component={SignUp} />
-                <Route exact path="/login" component={Login} />
-            </LaunchScreen>
+            <Container>
+                <GlobalStyle />
+                <Switch>
+                    <Route exact path="/" component={LaunchScreen} />
+                    <Route path="/sign-up" component={SignUp} />
+                    <Route path="/login" component={Login} />
+                    <PrivateRoute exact path="/main" component={Main} />
+                </Switch>
+            </Container>
         )
     }
 }
-
+  
 export default App
