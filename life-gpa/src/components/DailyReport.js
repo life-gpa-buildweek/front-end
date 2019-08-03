@@ -307,7 +307,7 @@ class DailyReport extends React.Component {
                     </TitleContainer>
                     <HabitsList>
                         {this.props.habits.length === 0
-                            ? <HabitListP>Looks like you have no Habits, click the 'Add More Habits' button to get started.</HabitListP>
+                            ? <HabitListP>Looks as if you have yet to start any Habits, click the 'Add More Habits' button to get started.</HabitListP>
                             : this.props.habits.map(habit => 
                                 <Habits
                                     key={habit.id}
