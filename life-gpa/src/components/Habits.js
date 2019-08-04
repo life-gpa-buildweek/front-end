@@ -171,7 +171,7 @@ class Habits extends React.Component {
         this.setState({completed: true, default: false})
         const points = 100 / this.props.habits.length
         const completionPoints = Math.round(points)
-        const completed = 1
+        const completed = true
         const habitTitle = this.props.title
         const id = this.props.id
         const userId = this.props.userId
@@ -187,7 +187,7 @@ class Habits extends React.Component {
         event.preventDefault();
         this.setState({completed: false, default: false})
         const completionPoints = 0
-        const completed = 0
+        const completed = false
         const habitTitle = this.props.title
         const id = this.props.id
         const userId = this.props.userId
