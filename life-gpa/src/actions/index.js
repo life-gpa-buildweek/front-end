@@ -191,11 +191,12 @@ export function deleteHabit(id) {
     }
 }
 
-export function completedHabit(id, habitTitle, userId, categoryId, completed, completionPoints) {
+export function completedHabit(id, habitTitle, categoryId, completed, completionPoints) {
     return(dispatch) => {
         dispatch({type: COMPLETING_HABIT})
 
         const token = localStorage.getItem('token')
+        const userId = localStorage.getItem('id')
   
         return axios
             .put(`https://lifegpa-zach-christy.herokuapp.com/api/habits/${id}`, 

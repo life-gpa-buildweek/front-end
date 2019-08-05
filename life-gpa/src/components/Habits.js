@@ -174,10 +174,9 @@ class Habits extends React.Component {
         const completed = true
         const habitTitle = this.props.title
         const id = this.props.id
-        const userId = this.props.userId
         const categoryId = this.props.categoryId
 
-        this.props.completedHabit(id, habitTitle, categoryId, userId, completed, completionPoints)
+        this.props.completedHabit(id, habitTitle, categoryId, completed, completionPoints)
             .then(() => {
                 this.props.getChartData()
             })
